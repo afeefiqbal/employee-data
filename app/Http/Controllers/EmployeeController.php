@@ -39,7 +39,9 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
+        return view('employees.create', [
+            'component' => new \App\View\Components\EmployeeForm()
+        ]);
     }
 
     /**
@@ -63,7 +65,10 @@ class EmployeeController extends Controller
      */
     public function edit(Employee $employee)
     {
-        //
+        return view('employees.edit', [
+            'employee' => $employee,
+            'component' => new \App\View\Components\EmployeeForm($employee)
+        ]);
     }
 
     /**
