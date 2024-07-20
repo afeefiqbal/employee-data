@@ -1,4 +1,5 @@
 <div>
+    
     <form method="POST" enctype="multipart/form-data" action="{{ $company ? route('companies.update', $company->id) : route('companies.store') }}">
         @csrf
         @if($company)

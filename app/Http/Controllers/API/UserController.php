@@ -10,12 +10,15 @@ class UserController extends Controller
 {
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
-            $token = $user->createToken('API Token')->plainTextToken;
-            return response()->json(['token' => $token], 200);
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json(['token' => $token, 'user' => $user]);
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);
@@ -23,6 +26,9 @@ class UserController extends Controller
 
     public function index()
     {
-        return response()->json(Auth::user()->load('company'), 200);
+        $user = Auth::user();
+       $employee=  $user->load('employees');
+       $employee= ($employee->employees->load('company'));
+        return response()->json($employee, 200);
     }
 }

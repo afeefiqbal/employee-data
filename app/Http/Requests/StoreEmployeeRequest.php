@@ -25,8 +25,10 @@ class StoreEmployeeRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'company_id' => 'required|exists:companies,id',
-            'email' => 'required|email|unique:employees,email',
+            'email' => 'required|email|unique:employees,email,' . ($this->employee ? $this->employee->id : 'NULL'),
             'phone' => 'nullable|string|max:15',
+            'password' => isset($this->employee) ? 'nullable|string|min:8|confirmed' : 'required|string|min:8|confirmed',
+
         ];
     }
 }

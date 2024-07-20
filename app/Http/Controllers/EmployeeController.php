@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Models\Employee;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
-
+use Illuminate\Support\Facades\Hash;
+use DB;
 class EmployeeController extends Controller
 {
     /**
@@ -39,8 +41,10 @@ class EmployeeController extends Controller
      */
     public function create()
     {
+
         return view('employees.create', [
-            'component' => new \App\View\Components\EmployeeForm()
+            'action' => route('employees.store'),
+            'submitText' => 'Create Employee'
         ]);
     }
 
@@ -49,7 +53,17 @@ class EmployeeController extends Controller
      */
     public function store(StoreEmployeeRequest $request)
     {
-        Employee::create($request->validated());
+       DB::beginTransaction();
+       $data = $request->validated();
+       $data['name'] =        $data['first_name']. ' '.$data['last_name'] ;
+       $data['password'] = Hash::make($data['password']);
+       $user = User::create($data);
+       $data['user_id']= $user->id;
+
+       $employee  =   Employee::create($data);
+
+        $employee->save();
+        DB::commit();
         return redirect()->route('employees.index')->with('success', 'Employee created successfully.');
     }
     /**
@@ -66,8 +80,9 @@ class EmployeeController extends Controller
     public function edit(Employee $employee)
     {
         return view('employees.edit', [
+            'action' => route('employees.store'),
+            'submitText' => 'Update Employee',
             'employee' => $employee,
-            'component' => new \App\View\Components\EmployeeForm($employee)
         ]);
     }
 
@@ -76,7 +91,25 @@ class EmployeeController extends Controller
      */
     public function update(StoreEmployeeRequest $request, Employee $employee)
     {
-        $employee->update($request->validated());
+        DB::beginTransaction();
+        $employee = Employee::findOrFail($employee->id);
+        $data = $request->validated();
+        $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
+        $data['password'] = Hash::make($data['password']);
+        $data['user_id']= $employee->user_id;
+        $user = User::findOrFail($data['user_id']);
+        $user->update([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => $data['password'],
+        ]);
+        $employee->update([
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'email' => $data['email'],
+        ]);
+            DB::commit();
+
         return redirect()->route('employees.index')->with('success', 'Employee updated successfully.');
     }
 
@@ -85,6 +118,9 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee)
     {
-        //
+        $employee->delete();
+
+        return redirect()->route('employees.index')
+            ->with('success', 'Employee deleted successfully.');
     }
 }

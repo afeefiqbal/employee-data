@@ -23,8 +23,8 @@ class StoreCompanyRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:companies,email',
-            'logo' => 'nullable|image|dimensions:min_width=100,min_height=100',
+            'email' => 'required|email|unique:companies,email,' . ($this->company ? $this->company->id : 'NULL'), 'email' => 'required|email|unique:companies,email,' . ($this->company ? $this->company->id : 'NULL'),
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|dimensions:min_width=100,min_height=100',
             'website' => 'nullable|url',
         ];
     }

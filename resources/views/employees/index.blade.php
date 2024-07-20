@@ -8,6 +8,3 @@
 </div>
 @endsection
 
-@push('scripts')
-@include('components.employee-table')
-@endpush

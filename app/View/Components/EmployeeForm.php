@@ -16,7 +16,7 @@ class EmployeeForm extends Component
     public $employee;
     public $companies;
 
-    public function __construct(Employee $employee = null)
+    public function __construct($employee = null)
     {
         $this->employee = $employee;
         $this->companies = Company::all();
@@ -27,6 +27,7 @@ class EmployeeForm extends Component
      */
     public function render(): View|Closure|string
     {
+       
         return view('components.employee-form');
     }
 }

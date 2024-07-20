@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCompanyRequest;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyController extends Controller
 {
@@ -14,6 +15,7 @@ class CompanyController extends Controller
      */
     public function index(Request $request)
     {
+
         if ($request->ajax()) {
             $data = Company::all();
             return DataTables::of($data)
@@ -52,6 +54,7 @@ class CompanyController extends Controller
      */
     public function store(StoreCompanyRequest $request)
 {
+
     $company = Company::create($request->validated());
 
     if ($request->hasFile('logo')) {

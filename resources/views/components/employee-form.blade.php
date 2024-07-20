@@ -41,6 +41,17 @@
             <input type="text" name="phone" id="phone" class="form-control" value="{{ old('phone', $employee->phone ?? '') }}">
             @error('phone') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" class="form-control" {{ isset($employee) ? '' : 'required' }}>
+            @error('password') <span class="text-danger">{{ $message }}</span> @enderror
+        </div>
+
+        <!-- Password Confirmation Field -->
+        <div class="form-group">
+            <label for="password_confirmation">Confirm Password</label>
+            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" {{ isset($employee) ? '' : 'required' }}>
+        </div>
 
         <button type="submit" class="btn btn-primary">{{ isset($employee) ? 'Update' : 'Create' }} Employee</button>
     </form>
